@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Weather App</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Weather App</h1>
+    <form id="form">
+      <input type="text" id="input" placeholder="Enter a city name">
+      <button type="submit" id="button">Search</button>
+    </form>
+    <div id="result"></div>
+  </div>
+  <script src="script.js">
+      // Get the elements from the HTML file
+const form = document.getElementById("form");
+const input = document.getElementById("input");
+const button = document.getElementById("button");
+const result = document.getElementById("result");
+
+// Define the API key and the base URL
+const apiKey = "YOUR_API_KEY"; // Replace this with your own API key
+const baseUrl = "https://api.openweathermap.org/data/2.5/weather";
+
+// Add an event listener to the form
+form.addEventListener("submit", function (event) {
+  // Prevent the default behavior of the form
+  event.preventDefault();
+  // Get the value of the input
+  const city = input.value;
+  // Check if the input is not empty
+  if (city) {
+    // Call the getWeather function with the city name
+    getWeather(city);
+  }
+});
+
+// Define a function to get the weather data from the API
+function getWeather(city) {
+  // Construct the full URL with the city name and the API key
+  const url = `${baseUrl}?q=${city}&appid=${apiKey}&units=metric`;
+  // Use the fetch method to make a request to the API
+  fetch(url)
+    .then(function (response) {
+      // Check if the response is successful
+      if (response.ok) {
+        // Return the response as JSON
+        return response.json();
+      } else {
+        // Throw an error if the response is not successful
+        throw new Error("Something went wrong");
+      }
+    })
+    .then(function (data) {
+      // Display the result element
+      result.style.display = "block";
+      // Create an HTML string with the weather data
+      const html = `
+        <p>City: ${data.name}</p>
+        <p>Country: ${data.sys.country}</p>
+        <p>Temperature: ${data.main.temp} °C</p>
+        <p>Humidity: ${data.main.humidity} %</p>
+        <p>Description: ${data.weather[0].description}</p>
+      `;
+      // Insert the HTML string into the result element
+      result.innerHTML = html;
+    })
+    .catch(function (error) {
+      // Display the error message
+      alert(error.message);
+    });
+}
+
+  </script>
+  
+</body>
+</html>
